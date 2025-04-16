@@ -700,24 +700,27 @@ return {
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
 			},
+			fuzzy = { implementation = "prefer_rust_with_warning" },
 		},
 	},
 
 	-- inline function signatures
-	{
-		"ray-x/lsp_signature.nvim",
-		event = "VeryLazy",
-		opts = {},
-		config = function(_, opts)
-			-- get signatures (and _only_ signatures) when in argument lists.
-			require("lsp_signature").setup({
-				doc_lines = 0,
-				handler_opts = {
-					border = "none",
-				},
-			})
-		end,
-	},
+	-- (but something else is already providing this)
+	-- {
+	-- 	"ray-x/lsp_signature.nvim",
+	-- 	event = "VeryLazy",
+	-- 	opts = {},
+	-- 	config = function(_, opts)
+	-- 		-- get signatures (and _only_ signatures) when in argument lists.
+	-- 		require("lsp_signature").setup({
+	-- 			doc_lines = 0,
+	-- 			handler_opts = {
+	-- 				border = "none",
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
+
 	-- language support
 	-- toml
 	"cespare/vim-toml",

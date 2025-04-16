@@ -1,0 +1,90 @@
+# Private settings in include file
+[include]
+  path = ~/.gitconfig.local
+
+[url "git@github.com:"]
+  pushInsteadOf = https://github.com/
+
+[alias]
+  tags = tag -l
+  branches = branch -a
+  remotes = remote -v
+  amend = commit --amend --reuse-message=HEAD
+
+[core]
+  excludesfile = ~/.gitignore
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  dark = true
+  side-by-side = true
+  line-numbers = true
+
+[merge]
+  conflictstyle = zdiff3
+
+# Dracula theme
+[url "https://github.com/dracula/"]
+  insteadOf = dracula://
+[color]
+  ui = auto
+[color "branch"]
+  current = cyan bold reverse
+  local = white
+  plain =
+  remote = cyan
+[color "diff"]
+  commit =
+  func = cyan
+  plain =
+  whitespace = magenta reverse
+  meta = white
+  frag = cyan bold reverse
+  old = red
+  new = green
+[color "grep"]
+  context =
+  filename =
+  function =
+  linenumber = white
+  match =
+  selected =
+  separator =
+[color "interactive"]
+  error =
+  header =
+  help =
+  prompt =
+[color "status"]
+  added = green
+  changed = yellow
+  header =
+  localBranch =
+  nobranch =
+  remoteBranch = cyan bold
+  unmerged = magenta bold reverse
+  untracked = red
+  updated = green bold
+
+[init]
+  defaultBranch = main
+
+[rerere]
+  enabled = true
+
+[credential "https://github.com"]
+  helper = !/usr/bin/gh auth git-credential
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = Anson VanDoren
+	email = anson.vandoren@gmail.com
+[push]
+	autoSetupRemote = true

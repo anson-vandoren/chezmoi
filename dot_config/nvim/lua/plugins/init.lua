@@ -1,34 +1,12 @@
 return {
 	-- main color theme
-	-- {
-	-- 	"wincent/base16-nvim",
-	-- 	lazy = false, -- load at start
-	-- 	priority = 1000, -- load first
-	-- 	config = function()
-	-- 		vim.cmd([[colorscheme railscasts]])
-	-- 		vim.o.background = "dark"
-	--
-	-- 		-- Make comments more prominent
-	-- 		-- local bools = vim.api.nvim_get_hl(0, { name = 'Boolean' })
-	-- 		-- vim.api.nvim_set_hl(0, 'Comment', bools)
-	-- 		--
-	-- 		-- Make it clearly visible which argument we're at.
-	-- 		local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
-	-- 		vim.api.nvim_set_hl(
-	-- 			0,
-	-- 			"LspSignatureActiveParameter",
-	-- 			{ fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg }
-	-- 		)
-	-- 	end,
-	-- },
-
 	{
-		"savq/melange-nvim",
+		"wincent/base16-nvim",
 		lazy = false, -- load at start
 		priority = 1000, -- load first
 		config = function()
-			vim.cmd([[colorscheme melange]])
-			vim.o.background = "dark"
+			vim.cmd([[colorscheme ayu-dark]])
+			-- vim.o.background = "light"
 
 			-- Make it clearly visible which argument we're at.
 			local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
@@ -39,6 +17,24 @@ return {
 			)
 		end,
 	},
+
+	-- {
+	-- 	"savq/melange-nvim",
+	-- 	lazy = false, -- load at start
+	-- 	priority = 1000, -- load first
+	-- 	config = function()
+	-- 		vim.cmd([[colorscheme melange]])
+	-- 		vim.o.background = "dark"
+	--
+	-- 		-- Make it clearly visible which argument we're at.
+	-- 		local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
+	-- 		vim.api.nvim_set_hl(
+	-- 			0,
+	-- 			"LspSignatureActiveParameter",
+	-- 			{ fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg }
+	-- 		)
+	-- 	end,
+	-- },
 
 	"xiyaowong/transparent.nvim",
 
@@ -443,11 +439,16 @@ return {
 				lspconfig[server].setup(config)
 			end
 
+			vim.diagnostic.config({
+				update_in_insert = true,
+			})
+
 			-- Rust
 			lspconfig.rust_analyzer.setup({
 				on_attach = function(_, bufnr)
 					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 				end,
+
 				-- server-specific settings
 				settings = {
 					["rust-analyzer"] = {
@@ -459,15 +460,14 @@ return {
 							allFeatures = true,
 						},
 						check = {
-							command = "clippy",
+							-- clippy is nice, but it's stupidly expensive
+							-- command = "clippy",
 							features = "all",
 						},
+						checkOnSave = { enable = true },
 						completion = {
 							privateEditable = { enable = true },
 							termSearch = { enable = true, fuel = 2000 },
-							-- postfix = {
-							-- 	enable = false,
-							-- },
 						},
 						diagnostics = {
 							disabled = { "inactive-code" },
@@ -538,18 +538,6 @@ return {
 					map("<leader>fs", function()
 						Snacks.picker.lsp_symbols()
 					end, "Find Symbols")
-
-					local client = vim.lsp.get_client_by_id(ev.data.client_id)
-
-					-- When https://neovim.io/doc/user/lsp.html#lsp-inlay_hint stabilizes
-					-- *and* there's some way to make it only apply to the current line.
-					-- if client.server_capabilities.inlayHintProvider then
-					--     vim.lsp.inlay_hint(ev.buf, true)
-					-- end
-
-					-- None of this semantics tokens business.
-					-- https://www.reddit.com/r/neovim/comments/143efmd/is_it_possible_to_disable_treesitter_completely/
-					-- client.server_capabilities.semanticTokensProvider = nil
 				end,
 			})
 		end,

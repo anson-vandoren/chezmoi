@@ -2,16 +2,11 @@
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
 vim.g.mapleader = ","
-vim.g.maplocalleader = "\\"
+--vim.g.maplocalleader = "\\"
 
 ------------------------------
 -- general nvim preferences --
 ------------------------------
-
--- disable folding
--- vim.opt.foldenable = false
--- vim.opt.foldmethod = manual
--- vim.opt.foldlevelstart = 99
 
 -- keep more context on screen while scrolling
 vim.opt.scrolloff = 2
@@ -28,23 +23,28 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 -- infinite undo (in ~/.local/state/nvim/undo)
 vim.opt.undofile = true
+
 -- wildmenu
 -- for completions, when there is more than one match,
 -- list all matches and only complete the longest common match
 -- vim.opt.wildmode = "list:longest"
 -- when opening a file like with :e, don't suggest these sorts of files:
 vim.opt.wildignore = ".hg,.svn,*~,*.png,*.jpg,*.gif,*.min.js,*.swp,*.o,vendor,dist,_site"
+
 -- tabs
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
 vim.opt.tabstop = 2
 vim.opt.expandtab = true
+
 -- case-insensitive search/replace
 vim.opt.ignorecase = true
 -- unless the search term contains uppercase
 vim.opt.smartcase = true
+
 -- no audible beep
 vim.opt.vb = true
+
 -- improve diffs (nvim -d)
 -- ignore whitespace
 vim.opt.diffopt:append("iwhite")
@@ -53,10 +53,10 @@ vim.opt.diffopt:append("iwhite")
 --- https://luppeng.wordpress.com/2020/10/10/when-to-use-each-of-the-git-diff-algorithms/
 vim.opt.diffopt:append("algorithm:histogram")
 vim.opt.diffopt:append("indent-heuristic")
--- show a column at 120 chars as a guide for long lines
--- vim.opt.colorcolumn = "120"
+
 -- use system clipboard
 vim.api.nvim_set_option("clipboard", "unnamedplus")
+
 -- current line highlighting
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
@@ -66,47 +66,44 @@ vim.opt.termguicolors = true
 -------------
 
 local map = vim.keymap.set
--- quick save
-map("n", "<leader>w", "<cmd>w<cr>")
--- leader-space to stop searching
-map("v", "<leader> ", "<cmd>nohlsearch<cr>")
+-- Esc to clear search terms in normal mode
 map("n", "<esc>", "<cmd>nohlsearch<cr>")
--- <leader><leader> toggles between buffers
--- map('n', '<leader><leader>', '<c-^>')
+
 -- always center search results
 map("n", "n", "nzz", { silent = true })
 map("n", "N", "Nzz", { silent = true })
 map("n", "*", "*zz", { silent = true })
+
 -- "very magic" (less escaping needed) regexes by default
 map("n", "?", "?\\v")
 map("n", "/", "/\\v")
 map("n", "%s/", "%sm/")
+
 -- switch buffers left and right with arrow keys
 map("n", "<left>", ":bp<cr>")
 map("n", "<right>", ":bn<cr>")
+
 -- j and k move by visual line, not actual line
 map("n", "j", "gj")
 map("n", "k", "gk")
--- replace up to next _ (for snek case)
-map("n", "<leader>m", "ct_")
+
 -- delete this buffer
 map("n", "<leader>bd", function()
 	Snacks.bufdelete()
 end, { desc = "Delete Buffer" })
+
 -- delete the other buffers
 map("n", "<leader>bo", function()
 	Snacks.bufdelete.other()
 end, { desc = "Delete Other Buffers" })
+
 -- better indenting
 map("v", "<", "<gv")
 map("v", ">", ">gv")
+
 -- lazy console
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
--- commenting
-map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
-map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
--- new file
-map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+
 -- lazygit
 if vim.fn.executable("lazygit") == 1 then
 	local LazyRoot = require("config.root")
@@ -118,20 +115,20 @@ if vim.fn.executable("lazygit") == 1 then
 		Snacks.picker.git_log({ cwd = LazyRoot.git() })
 	end, { desc = "Git Log" })
 end
+
 -- git blame toggle
 map("n", "<leader>gb", function()
 	Snacks.picker.git_log_line()
 end, { desc = "Git Blame Line" })
+
 -- open git remote
 map({ "n", "x" }, "<leader>gB", function()
 	Snacks.gitbrowse()
 end, { desc = "Git Browse (open)" })
+
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
--- floating terminal
-map("n", "<leader>ft", function()
-	Snacks.terminal()
-end, { desc = "Terminal (cwd)" })
+
 -- Telescope
 map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Search help tags (Telescope)" })
 
@@ -141,15 +138,17 @@ map("n", "<leader>a", function()
 	Snacks.picker.grep()
 end, { desc = "Live Grep (Telescope)" })
 
+-- Show list of open buffers
 map("n", ";", function()
 	Snacks.picker.buffers({ current = false })
 end, { desc = "Find Buffer" })
+
+-- Show command history in picker
 map("n", "<leader>fc", function()
 	Snacks.picker.command_history()
 end, { desc = "Command History" })
 
 -- Find Files
--- map("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find Files (Telescope)" })
 map("n", "<C-p>", function()
 	Snacks.picker.files()
 end, { desc = "Find Files (Picker)" })
@@ -174,13 +173,12 @@ map("n", "<leader>fR", function()
 	Snacks.picker.registers()
 end, { desc = "Search Registers" })
 
--- Undo
+-- Show undo history
 map("n", "<leader>fu", function()
 	Snacks.picker.undo()
 end, { desc = "Search Undos" })
 
 -- Find keymaps
--- map("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Find Keymaps (Telescope)" })
 map("n", "<leader>fk", function()
 	Snacks.picker.keymaps()
 end, { desc = "Find Keymaps (Telescope)" })
@@ -190,14 +188,10 @@ map("n", "<leader>fl", function()
 	Snacks.picker.lines()
 end, { desc = "Find Lines in Buffer" })
 
+-- Show diagnostics in picker
 map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { desc = "Find Diagnostic (Telescope)" })
+
 -- TODOs
-map("n", "<leader>tn", function()
-	require("todo-comments").jump_next()
-end, { desc = "Next TODO" })
-map("n", "<leader>tp", function()
-	require("todo-comments").jump_next()
-end, { desc = "Previous TODO" })
 map("n", "<leader>tt", "<cmd>TodoTelescope<cr>", { desc = "Toggle TODO list" })
 
 -- Git diff view (merge conflict resolution)
@@ -212,6 +206,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	pattern = "*",
 	command = "silent! lua vim.highlight.on_yank({ timeout = 700 })",
 })
+
 -- jump to last edit position on opening file
 vim.api.nvim_create_autocmd("BufReadPost", {
 	pattern = "*",
@@ -225,6 +220,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 		end
 	end,
 })
+
 -- autosave on lose focus
 vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost" }, {
 	pattern = "*",

@@ -46,6 +46,7 @@ return {
 		"nvim-telescope/telescope-fzf-native.nvim",
 		build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
 	},
+
 	-- Diff viewer and merge tool
 	"sindrets/diffview.nvim",
 
@@ -148,12 +149,6 @@ return {
 			{ "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
 			{ "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
 			{ "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
-			{ "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
-			{ "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-			{ "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
-			{ "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
-			{ "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
-			{ "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
 		},
 		opts = {
 			options = {
@@ -704,26 +699,11 @@ return {
 		},
 	},
 
-	-- inline function signatures
-	-- (but something else is already providing this)
-	-- {
-	-- 	"ray-x/lsp_signature.nvim",
-	-- 	event = "VeryLazy",
-	-- 	opts = {},
-	-- 	config = function(_, opts)
-	-- 		-- get signatures (and _only_ signatures) when in argument lists.
-	-- 		require("lsp_signature").setup({
-	-- 			doc_lines = 0,
-	-- 			handler_opts = {
-	-- 				border = "none",
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
-
 	-- language support
+
 	-- toml
 	"cespare/vim-toml",
+
 	-- yaml
 	{
 		"cuducos/yaml.nvim",
@@ -732,6 +712,7 @@ return {
 			"nvim-treesitter/nvim-treesitter",
 		},
 	},
+
 	-- rust
 	{
 		"rust-lang/rust.vim",
@@ -742,6 +723,7 @@ return {
 			vim.g.rust_clip_command = "xclip -sel clip"
 		end,
 	},
+
 	-- markdown
 	{
 		"plasticboy/vim-markdown",
@@ -760,6 +742,7 @@ return {
 			vim.g.vim_markdown_auto_insert_bullets = 0
 		end,
 	},
+
 	-- LALRPOP
 	"qnighy/lalrpop.vim",
 }

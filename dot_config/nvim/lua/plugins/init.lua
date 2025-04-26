@@ -295,7 +295,7 @@ return {
 
 	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.8",
+		-- tag = "0.1.8",
 		requires = {
 			{ "nvim-lua/plenary.nvim" },
 		},
@@ -538,6 +538,10 @@ return {
 					map("<leader>fs", function()
 						Snacks.picker.lsp_symbols()
 					end, "Find Symbols")
+					map("<leader>fsw", function()
+						Snacks.picker.lsp_symbols()
+					end, "Find Symbols (Workspace)")
+					local client = vim.lsp.get_client_by_id(ev.data.client_id)
 				end,
 			})
 		end,

@@ -18,24 +18,6 @@ return {
 		end,
 	},
 
-	-- {
-	-- 	"savq/melange-nvim",
-	-- 	lazy = false, -- load at start
-	-- 	priority = 1000, -- load first
-	-- 	config = function()
-	-- 		vim.cmd([[colorscheme melange]])
-	-- 		vim.o.background = "dark"
-	--
-	-- 		-- Make it clearly visible which argument we're at.
-	-- 		local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
-	-- 		vim.api.nvim_set_hl(
-	-- 			0,
-	-- 			"LspSignatureActiveParameter",
-	-- 			{ fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg }
-	-- 		)
-	-- 	end,
-	-- },
-
 	"xiyaowong/transparent.nvim",
 
 	{
@@ -54,12 +36,8 @@ return {
 			-- add any options here
 		},
 		dependencies = {
-			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			"MunifTanjim/nui.nvim",
-			-- OPTIONAL:
-			--   `nvim-notify` is only needed, if you want to use the notification view.
-			--   If not available, we use `mini` as the fallback
-			-- "rcarriga/nvim-notify",
+			"rcarriga/nvim-notify",
 		},
 	},
 
@@ -319,7 +297,7 @@ return {
 	"tpope/vim-surround",
 
 	-- add closing tags for HTML
-	"alvan/vim-closetag",
+	-- "alvan/vim-closetag",
 
 	-- add closing brace, etc. when opening
 	{ "windwp/nvim-autopairs", event = "InsertEnter", config = true },
@@ -417,7 +395,7 @@ return {
 		opts = {},
 	},
 
-	{ "mbbill/undotree" },
+	-- { "mbbill/undotree" },
 
 	-- LSP
 	{
@@ -431,20 +409,23 @@ return {
 		config = function(_, opts)
 			-- setup language servers
 			local lspconfig = require("lspconfig")
-			-- enable blink
-			for server, config in pairs(opts.servers) do
-				-- passing config.capabilities to blink.cmp merges with the capabilities in your
-				-- `opts[server].capabilities, if you've defined it
-				config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
-				lspconfig[server].setup(config)
-			end
 
-			vim.diagnostic.config({
-				update_in_insert = true,
-			})
+			-- enable blink
+			-- for server, config in pairs(opts.servers) do
+			-- 	-- passing config.capabilities to blink.cmp merges with the capabilities in your
+			-- 	-- `opts[server].capabilities, if you've defined it
+			-- 	config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+			-- 	lspconfig[server].setup(config)
+			-- end
+
+			-- vim.diagnostic.config({
+			-- 	update_in_insert = true,
+			-- })
 
 			-- Rust
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
 			lspconfig.rust_analyzer.setup({
+				capabilities = capabilities,
 				on_attach = function(_, bufnr)
 					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 				end,
@@ -502,6 +483,35 @@ return {
 							},
 						},
 					},
+				},
+			})
+
+			-- Diagnostic Config
+			-- See :help vim.diagnostic.Opts
+			vim.diagnostic.config({
+				severity_sort = true,
+				float = { border = "rounded", source = "if_many" },
+				underline = { severity = vim.diagnostic.severity.ERROR },
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = "󰅚 ",
+						[vim.diagnostic.severity.WARN] = "󰀪 ",
+						[vim.diagnostic.severity.INFO] = "󰋽 ",
+						[vim.diagnostic.severity.HINT] = "󰌶 ",
+					},
+				},
+				virtual_text = {
+					source = "if_many",
+					spacing = 2,
+					format = function(diagnostic)
+						local diagnostic_message = {
+							[vim.diagnostic.severity.ERROR] = diagnostic.message,
+							[vim.diagnostic.severity.WARN] = diagnostic.message,
+							[vim.diagnostic.severity.INFO] = diagnostic.message,
+							[vim.diagnostic.severity.HINT] = diagnostic.message,
+						}
+						return diagnostic_message[diagnostic.severity]
+					end,
 				},
 			})
 
@@ -571,11 +581,6 @@ return {
 				lua = { "stylua" },
 				rust = { "rustfmt" },
 				typescript = { "prettier" },
-				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
-				--
-				-- You can use 'stop_after_first' to run the first available formatter from the list
-				-- javascript = { "prettierd", "prettier", stop_after_first = true },
 			},
 			formatters = {
 				rustfmt = {
@@ -628,36 +633,36 @@ return {
 				"yaml",
 			},
 			auto_install = true,
-			incremental_selection = {
-				enable = true,
-				keymaps = {
-					init_selection = "<C-space>",
-					node_incremental = "<C-space>",
-					scope_incremental = false,
-					node_decremental = "<bs>",
-				},
-			},
-			textobjects = {
-				move = {
-					enable = true,
-					goto_next_start = {
-						["]f"] = "@function.outer",
-						["]c"] = "@class.outer",
-						["]a"] = "@parameter.inner",
-					},
-					goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
-					goto_previous_start = {
-						["[f"] = "@function.outer",
-						["[c"] = "@class.outer",
-						["[a"] = "@parameter.inner",
-					},
-					goto_previous_end = {
-						["[F"] = "@function.outer",
-						["[C"] = "@class.outer",
-						["[A"] = "@parameter.inner",
-					},
-				},
-			},
+			-- incremental_selection = {
+			-- 	enable = true,
+			-- 	keymaps = {
+			-- 		init_selection = "<C-space>",
+			-- 		node_incremental = "<C-space>",
+			-- 		scope_incremental = false,
+			-- 		node_decremental = "<bs>",
+			-- 	},
+			-- },
+			-- textobjects = {
+			-- 	move = {
+			-- 		enable = true,
+			-- 		goto_next_start = {
+			-- 			["]f"] = "@function.outer",
+			-- 			["]c"] = "@class.outer",
+			-- 			["]a"] = "@parameter.inner",
+			-- 		},
+			-- 		goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
+			-- 		goto_previous_start = {
+			-- 			["[f"] = "@function.outer",
+			-- 			["[c"] = "@class.outer",
+			-- 			["[a"] = "@parameter.inner",
+			-- 		},
+			-- 		goto_previous_end = {
+			-- 			["[F"] = "@function.outer",
+			-- 			["[C"] = "@class.outer",
+			-- 			["[A"] = "@parameter.inner",
+			-- 		},
+			-- 	},
+			-- },
 			highlight = {
 				enable = true,
 				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
@@ -682,8 +687,12 @@ return {
 			cmdline = { enabled = true },
 			completion = {
 				accept = { auto_brackets = { enabled = false } },
+				ghost_text = { enabled = true },
+				keyword = { range = "prefix" },
+				list = { selection = { preselect = true, auto_insert = false } },
 				trigger = { show_in_snippet = false },
 			},
+			signature = { enabled = true },
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
 			},
@@ -706,15 +715,15 @@ return {
 	},
 
 	-- rust
-	{
-		"rust-lang/rust.vim",
-		ft = { "rust" },
-		config = function()
-			vim.g.rustfmt_emit_files = 1
-			vim.g.rustfmt_fail_silently = 0
-			vim.g.rust_clip_command = "xclip -sel clip"
-		end,
-	},
+	-- {
+	-- 	"rust-lang/rust.vim",
+	-- 	ft = { "rust" },
+	-- 	config = function()
+	-- 		vim.g.rustfmt_emit_files = 1
+	-- 		vim.g.rustfmt_fail_silently = 0
+	-- 		vim.g.rust_clip_command = "xclip -sel clip"
+	-- 	end,
+	-- },
 
 	-- markdown
 	{

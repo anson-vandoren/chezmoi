@@ -300,7 +300,38 @@ return {
 	-- "alvan/vim-closetag",
 
 	-- add closing brace, etc. when opening
-	{ "windwp/nvim-autopairs", event = "InsertEnter", config = true },
+	{
+		"saghen/blink.pairs",
+		version = "*", -- (recommended) only required with prebuilt binaries
+
+		-- download prebuilt binaries from github releases
+		dependencies = "saghen/blink.download",
+
+		--- @module 'blink.pairs'
+		--- @type blink.pairs.Config
+		opts = {
+			mappings = {
+				-- you can call require("blink.pairs.mappings").enable() and require("blink.pairs.mappings").disable() to enable/disable mappings at runtime
+				enabled = true,
+				-- see the defaults: https://github.com/Saghen/blink.pairs/blob/main/lua/blink/pairs/config/mappings.lua#L10
+				pairs = {},
+			},
+			highlights = {
+				enabled = true,
+				groups = {
+					"BlinkPairsOrange",
+					"BlinkPairsPurple",
+					"BlinkPairsBlue",
+				},
+				matchparen = {
+					enabled = true,
+					group = "MatchParen",
+				},
+			},
+			debug = false,
+		},
+	},
+	-- { "windwp/nvim-autopairs", event = "InsertEnter", config = true },
 
 	-- show git diff in the sign column
 	"airblade/vim-gitgutter",
@@ -411,21 +442,21 @@ return {
 			local lspconfig = require("lspconfig")
 
 			-- enable blink
-			-- for server, config in pairs(opts.servers) do
-			-- 	-- passing config.capabilities to blink.cmp merges with the capabilities in your
-			-- 	-- `opts[server].capabilities, if you've defined it
-			-- 	config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
-			-- 	lspconfig[server].setup(config)
-			-- end
+			for server, config in pairs(opts.servers) do
+				-- passing config.capabilities to blink.cmp merges with the capabilities in your
+				-- `opts[server].capabilities, if you've defined it
+				config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+				lspconfig[server].setup(config)
+			end
 
-			-- vim.diagnostic.config({
-			-- 	update_in_insert = true,
-			-- })
+			vim.diagnostic.config({
+				update_in_insert = true,
+			})
 
 			-- Rust
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
+			-- local capabilities = require("blink.cmp").get_lsp_capabilities()
 			lspconfig.rust_analyzer.setup({
-				capabilities = capabilities,
+				-- capabilities = capabilities,
 				on_attach = function(_, bufnr)
 					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 				end,
@@ -439,11 +470,13 @@ return {
 						},
 						cargo = {
 							allFeatures = true,
+							allTargets = true,
 						},
 						check = {
 							-- clippy is nice, but it's stupidly expensive
 							-- command = "clippy",
 							features = "all",
+							allTargets = true,
 						},
 						checkOnSave = { enable = true },
 						completion = {

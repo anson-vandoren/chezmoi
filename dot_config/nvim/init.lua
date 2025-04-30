@@ -191,6 +191,9 @@ end, { desc = "Find Lines in Buffer" })
 -- Show diagnostics in picker
 map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { desc = "Find Diagnostic (Telescope)" })
 
+-- Show notification history
+map("n", "<leader>fn", "<cmd>Telescope notify<cr>", { desc = "Find notifications (Telescope)" })
+
 -- TODOs
 map("n", "<leader>tt", "<cmd>TodoTelescope<cr>", { desc = "Toggle TODO list" })
 

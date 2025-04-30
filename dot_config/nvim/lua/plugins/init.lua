@@ -7,14 +7,6 @@ return {
 		config = function()
 			vim.cmd([[colorscheme ayu-dark]])
 			-- vim.o.background = "light"
-
-			-- Make it clearly visible which argument we're at.
-			local marked = vim.api.nvim_get_hl(0, { name = "PMenu" })
-			vim.api.nvim_set_hl(
-				0,
-				"LspSignatureActiveParameter",
-				{ fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg }
-			)
 		end,
 	},
 
@@ -28,6 +20,14 @@ return {
 	-- Diff viewer and merge tool
 	"sindrets/diffview.nvim",
 
+	{
+		"rcarriga/nvim-notify",
+		config = function()
+			require("notify").setup({
+				background_colour = "#000000",
+			})
+		end,
+	},
 	-- lazy.nvim
 	{
 		"folke/noice.nvim",
@@ -454,9 +454,9 @@ return {
 			})
 
 			-- Rust
-			-- local capabilities = require("blink.cmp").get_lsp_capabilities()
+			local capabilities = require("blink-cmp").get_lsp_capabilities()
 			lspconfig.rust_analyzer.setup({
-				-- capabilities = capabilities,
+				capabilities = capabilities,
 				on_attach = function(_, bufnr)
 					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 				end,
@@ -559,6 +559,7 @@ return {
 			-- after the language server attaches to the current buffer
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+
 				callback = function(ev)
 					-- Enable completion triggered by <c-x><c->
 					vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
@@ -584,12 +585,54 @@ return {
 					map("<leader>fsw", function()
 						Snacks.picker.lsp_symbols()
 					end, "Find Symbols (Workspace)")
-					local client = vim.lsp.get_client_by_id(ev.data.client_id)
 				end,
 			})
 		end,
 	},
 
+	{ -- Highlight, edit, and navigate code
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		main = "nvim-treesitter.configs", -- Sets main module to use for opts
+		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+		opts = {
+			ensure_installed = {
+				"bash",
+				"c",
+				"diff",
+				"html",
+				"javascript",
+				"json",
+				"lua",
+				"luadoc",
+				"markdown",
+				"markdown_inline",
+				"query",
+				"rust",
+				"typescript",
+				"vim",
+				"vimdoc",
+			},
+			-- Autoinstall languages that are not installed
+			auto_install = true,
+			highlight = {
+				enable = true,
+				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+				--  If you are experiencing weird indenting issues, add the language to
+				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
+				additional_vim_regex_highlighting = { "ruby" },
+			},
+			indent = { enable = true, disable = { "ruby" } },
+		},
+		-- There are additional nvim-treesitter modules that you can use to interact
+		-- with nvim-treesitter. You should go explore a few and see what interests you:
+		--
+		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+	},
+
+	{ "nvim-treesitter/nvim-treesitter-context" },
 	-- autoformat
 	{
 		"stevearc/conform.nvim",
@@ -635,78 +678,6 @@ return {
 	},
 
 	-- highligh, edit, navigate code
-	{
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
-		main = "nvim-treesitter.configs",
-		opts = {
-			ensure_installed = {
-				"bash",
-				"c",
-				"diff",
-				"html",
-				"javascript",
-				"jsdoc",
-				"json",
-				"jsonc",
-				"lua",
-				"luadoc",
-				"markdown",
-				"markdown_inline",
-				"printf",
-				"python",
-				"regex",
-				"rust",
-				"toml",
-				"tsx",
-				"typescript",
-				"vim",
-				"vimdoc",
-				"xml",
-				"yaml",
-			},
-			auto_install = true,
-			-- incremental_selection = {
-			-- 	enable = true,
-			-- 	keymaps = {
-			-- 		init_selection = "<C-space>",
-			-- 		node_incremental = "<C-space>",
-			-- 		scope_incremental = false,
-			-- 		node_decremental = "<bs>",
-			-- 	},
-			-- },
-			-- textobjects = {
-			-- 	move = {
-			-- 		enable = true,
-			-- 		goto_next_start = {
-			-- 			["]f"] = "@function.outer",
-			-- 			["]c"] = "@class.outer",
-			-- 			["]a"] = "@parameter.inner",
-			-- 		},
-			-- 		goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
-			-- 		goto_previous_start = {
-			-- 			["[f"] = "@function.outer",
-			-- 			["[c"] = "@class.outer",
-			-- 			["[a"] = "@parameter.inner",
-			-- 		},
-			-- 		goto_previous_end = {
-			-- 			["[F"] = "@function.outer",
-			-- 			["[C"] = "@class.outer",
-			-- 			["[A"] = "@parameter.inner",
-			-- 		},
-			-- 	},
-			-- },
-			highlight = {
-				enable = true,
-				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-				--  If you are experiencing weird indenting issues, add the language to
-				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
-				additional_vim_regex_highlighting = { "ruby" },
-			},
-			indent = { enable = true, disable = { "ruby" } },
-		},
-	},
-
 	-- different code completion
 	{
 		"saghen/blink.cmp",

@@ -437,17 +437,9 @@ return {
 				lua_ls = {},
 			},
 		},
-		config = function(_, opts)
+		config = function()
 			-- setup language servers
 			local lspconfig = require("lspconfig")
-
-			-- enable blink
-			for server, config in pairs(opts.servers) do
-				-- passing config.capabilities to blink.cmp merges with the capabilities in your
-				-- `opts[server].capabilities, if you've defined it
-				config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
-				lspconfig[server].setup(config)
-			end
 
 			vim.diagnostic.config({
 				update_in_insert = true,
@@ -678,31 +670,6 @@ return {
 	},
 
 	-- highligh, edit, navigate code
-	-- different code completion
-	{
-		"saghen/blink.cmp",
-		version = "*",
-		opts = {
-			keymap = { preset = "super-tab" },
-			appearance = {
-				use_nvim_cmp_as_default = true,
-				nerd_font_variant = "mono",
-			},
-			cmdline = { enabled = true },
-			completion = {
-				accept = { auto_brackets = { enabled = false } },
-				ghost_text = { enabled = true },
-				keyword = { range = "prefix" },
-				list = { selection = { preselect = true, auto_insert = false } },
-				trigger = { show_in_snippet = false },
-			},
-			signature = { enabled = true },
-			sources = {
-				default = { "lsp", "path", "snippets", "buffer" },
-			},
-			fuzzy = { implementation = "prefer_rust_with_warning" },
-		},
-	},
 
 	-- language support
 

@@ -8,6 +8,10 @@ return {
 	-- If you use nix, you can build from source using latest nightly rust with:
 	-- build = 'nix run .#build-plugin',
 
+	dependencies = {
+		"moyiz/blink-emoji.nvim",
+	},
+
 	---@module 'blink.cmp'
 	---@type blink.cmp.Config
 	opts = {
@@ -39,12 +43,35 @@ return {
 			keyword = { range = "prefix" },
 			list = { selection = { preselect = true, auto_insert = false } },
 			trigger = { show_in_snippet = false },
+			menu = {
+				-- Use treesitter to highlight the label text for the given list of sources
+				draw = {
+					treesitter = { "lsp" },
+				},
+			},
 		},
 
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
 		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
+			default = { "omni", "lsp", "path", "buffer", "emoji" },
+			providers = {
+				emoji = {
+
+					module = "blink-emoji",
+					name = "Emoji",
+					score_offset = -5, -- Tune by preference
+					opts = { insert = true }, -- Insert emoji (default) or complete its name
+					should_show_items = function()
+						return vim.tbl_contains(
+							-- Enable emoji completion only for git commits and markdown.
+							-- By default, enabled for all file-types.
+							{ "gitcommit", "markdown", "rust" },
+							vim.o.filetype
+						)
+					end,
+				},
+			},
 		},
 
 		-- (Default) Rust fuzzy matcher for typo resistance and significantly better performance

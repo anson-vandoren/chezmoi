@@ -128,12 +128,6 @@ map("n", "<leader>fu", function()
 	Snacks.picker.undo()
 end, { desc = "Search Undos" })
 
--- Find keymaps
--- map("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Find Keymaps (Telescope)" })
-map("n", "<leader>fk", function()
-	Snacks.picker.keymaps()
-end, { desc = "Find Keymaps (Telescope)" })
-
 -- TODOs
 map("n", "<leader>tn", function()
 	require("todo-comments").jump_next()

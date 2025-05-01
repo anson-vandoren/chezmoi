@@ -1,9 +1,4 @@
 return {
-	{
-		"nvim-telescope/telescope-fzf-native.nvim",
-		build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
-	},
-
 	-- Misc QoL stuff
 	{
 		"folke/snacks.nvim",
@@ -11,6 +6,7 @@ return {
 		lazy = false,
 		--@type snacks.Config
 		opts = {
+			bufdelete = { enabled = true },
 			gitbrowse = { enabled = true },
 			indent = {
 				only_scope = true,
@@ -18,9 +14,26 @@ return {
 					enabled = false,
 				},
 			},
-			bufdelete = { enabled = true },
+			lazygit = {},
 			picker = { enabled = true },
 			terminal = { win = { style = "terminal" } },
+		},
+
+		keys = {
+			{
+				"<leader>lg",
+				function()
+					Snacks.lazygit()
+				end,
+				desc = "LazyGit (via Snacks)",
+			},
+			{
+				"<leader>ft",
+				function()
+					Snacks.terminal()
+				end,
+				desc = "Open Floating Terminal (via Snacks)",
+			},
 		},
 	},
 
@@ -161,7 +174,7 @@ return {
 					map("gr", "<Cmd>FzfLua lsp_references<CR>", "Go to References (FzfLua)")
 					map("gh", vim.lsp.buf.hover, "Hover Action")
 					map("gs", vim.lsp.buf.signature_help, "Signature Help")
-					map("<C-t>", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Search Workspace Symbols")
+					map("<C-t>", require("fzf-lua").lsp_live_workspace_symbols, "Search Workspace Symbols")
 					map("<leader>rn", vim.lsp.buf.rename, "Rename")
 					map(
 						"<C-.>",
